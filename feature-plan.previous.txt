@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "current_feature": "core-gateway",
+  "features": [
+    {
+      "id": "core-gateway",
+      "title": "Core FastAPI Gateway with OpenAI-compatible /v1/chat/completions endpoint",
+      "status": "in_progress",
+      "acceptance": [
+        "FastAPI server starts on configurable port",
+        "/v1/chat/completions accepts OpenAI-format requests",
+        "Returns valid OpenAI-format response (mock for now)",
+        "Health check endpoint /health works"
+      ],
+      "implementation": [
+        "server/main.py",
+        "server/routes/chat.py",
+        "server/models.py"
+      ],
+      "tests": [
+        "tests/test_chat_endpoint.py"
+      ]
+    },
+    {
+      "id": "provider-registry",
+      "title": "Provider registry and key management",
+      "status": "planned",
+      "acceptance": [
+        "Can register custom OpenAI-compatible providers",
+        "Keys stored encrypted at rest",
+        "Health check endpoint for providers"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "routing-engine",
+      "title": "Smart routing with fallback chains",
+      "status": "planned",
+      "acceptance": [
+        "Multiple providers per model",
+        "Automatic failover on failure",
+        "Configurable routing strategies"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "dashboard-api",
+      "title": "Dashboard REST API for key/model management",
+      "status": "planned",
+      "acceptance": [
+        "CRUD for API keys",
+        "Model catalog browsing",
+        "Usage statistics"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "react-dashboard",
+      "title": "React dashboard UI",
+      "status": "planned",
+      "acceptance": [
+        "Key management UI",
+        "Model explorer",
+        "Request logs viewer"
+      ],
+      "implementation": [],
+      "tests": []
+    }
+  ]
+}</arg_key>
+<arg_key=i</arg_key>
+<arg_value>Create feature plan
