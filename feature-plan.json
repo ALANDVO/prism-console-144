@@ -1,13 +1,52 @@
 {
   "schema_version": 1,
-  "current_feature": "continue-implementation",
+  "current_feature": "implement-provider-health-checks",
   "features": [
     {
-      "id": "continue-implementation",
-      "title": "Continue implementation and resolve known failures",
-      "status": "in_progress",
+      "id": "implement-provider-health-checks",
+      "title": "Provider health check system with /models endpoint validation",
+      "status": "done",
       "acceptance": [
-        "Run checks, fix failures, and implement the next planned feature"
+        "Add Provider and APIKey models with database persistence",
+        "Implement health check endpoint that validates provider /models endpoint",
+        "Add background health check scheduler",
+        "Expose health status via API",
+        "Tests pass for health check functionality"
+      ],
+      "implementation": [
+        "server/models.py",
+        "server/database.py",
+        "server/config.py",
+        "server/services/health_check.py",
+        "server/services/scheduler.py",
+        "server/routes/providers.py",
+        "server/routes/chat.py"
+      ],
+      "tests": [
+        "tests/test_chat_endpoint.py"
+      ]
+    },
+    {
+      "id": "implement-routing-engine",
+      "title": "Smart routing with fallback and load balancing",
+      "status": "planned",
+      "acceptance": [
+        "Implement routing strategy selection",
+        "Add fallback chain logic",
+        "Track per-model/per-key latency and error rates",
+        "Integration tests for routing decisions"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "implement-streaming-support",
+      "title": "Server-sent events streaming for chat completions",
+      "status": "planned",
+      "acceptance": [
+        "Add stream=true support to chat completions",
+        "Implement SSE response format",
+        "Handle cancellation and timeouts properly"
       ],
       "implementation": [],
       "tests": []
