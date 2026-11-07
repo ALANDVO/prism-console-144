@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
+from server.services.encryption import encryption_service
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
@@ -110,16 +111,14 @@ async def create_api_key(
     provider = result.scalar_one_or_none()
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
-    
-    # Hash the key for storage
-    import hashlib
-    key_hash = hashlib.sha256(key_data.api_key.encode()).hexdigest()
+    # Encrypt the key for storage
+    key_encrypted = encryption_service.encrypt(key_data.api_key)
     key_prefix = key_data.api_key[:8] + "..." + key_data.api_key[-4:] if len(key_data.api_key) > 12 else key_data.api_key[:4] + "..." + key_data.api_key[-4:]
     
     db_key = APIKey(
         provider_id=provider_id,
         name=key_data.name,
-        key_hash=key_hash,
+        key_encrypted=key_encrypted,
         key_prefix=key_prefix
     )
     session.add(db_key)

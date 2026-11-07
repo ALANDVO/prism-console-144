@@ -1,4 +1,5 @@
 import asyncio
+from server.services.encryption import encryption_service
 import hashlib
 import json
 import time
@@ -89,7 +90,6 @@ class HealthCheckService:
                 error=str(e)[:200],
                 latency_ms=int((time.time() - start_time) * 1000)
             )
-    
     async def check_api_key(self, api_key: APIKey, provider: Provider) -> HealthCheckResponse:
         """Check a specific API key by calling /models with auth."""
         start_time = time.time()
@@ -99,7 +99,9 @@ class HealthCheckService:
             client = await self._get_client()
             semaphore = await self._get_semaphore()
             
-            headers = {"Authorization": f"Bearer {api_key.key_hash}"}
+            # Decrypt the API key for authentication
+            api_key_plaintext = encryption_service.decrypt(api_key.key_encrypted)
+            headers = {"Authorization": f"Bearer {api_key_plaintext}"}
             
             async with semaphore:
                 response = await client.get(url, headers=headers)
@@ -237,7 +239,23 @@ class HealthCheckService:
         
         async def check_pair(api_key: APIKey, provider: Provider):
             result = await self.check_api_key(api_key, provider)
-            await self.update_api_key_health(api_key.id, result)
+            models_cache = None
+            if result.status == HealthStatus.HEALTHY:
+                # Re-fetch models for caching
+                try:
+                    client = await self._get_client()
+                    semaphore = await self._get_semaphore()
+                    api_key_plaintext = encryption_service.decrypt(api_key.key_encrypted)
+                    headers = {"Authorization": f"Bearer {api_key_plaintext}"}
+                    url = str(provider.base_url).rstrip("/") + provider.models_endpoint
+                    async with semaphore:
+                        response = await client.get(url, headers=headers)
+                        if response.status_code == 200:
+                            data = response.json()
+                            models_cache = json.dumps(data.get("data", []))
+                except Exception:
+                    pass  # Ignore cache fetch errors
+            await self.update_api_key_health(api_key.id, result, models_cache)
         
         tasks = [check_pair(ak, p) for ak, p in pairs]
         await asyncio.gather(*tasks, return_exceptions=True)
