@@ -43,12 +43,9 @@ class Provider(Base):
 
 class APIKey(Base):
     __tablename__ = "api_keys"
-    
     id = Column(Integer, primary_key=True, index=True)
     provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
-    name = Column(String(100), nullable=False)
-    key_hash = Column(String(255), nullable=False)  # Store hashed key
-    key_prefix = Column(String(20), nullable=False)  # First few chars for identification
+    key_encrypted = Column(String(500), nullable=False)  # Store encrypted key
     is_enabled = Column(Boolean, default=True)
     health_status = Column(SQLEnum(HealthStatus), default=HealthStatus.UNKNOWN)
     last_health_check = Column(DateTime, nullable=True)
