@@ -42,3 +42,6 @@ Acceptance:
 - Implement SSE response format
 - Handle cancellation and timeouts properly
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

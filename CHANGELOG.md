@@ -48,3 +48,7 @@ Partial code published for continued development. Known issues: STATUS.md.
 ### Infrastructure
 - Added sqlalchemy, aiosqlite, apscheduler dependencies
 - Test infrastructure with pytest-asyncio and httpx
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
