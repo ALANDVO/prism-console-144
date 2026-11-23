@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-implement-provider-health-checks
+implement-routing-engine
 
 ## Roadmap
 
@@ -25,13 +25,17 @@ Tests: `tests/test_chat_endpoint.py`
 
 ### implement-routing-engine — Smart routing with fallback and load balancing
 
-Status: planned
+Status: in_progress
 
 Acceptance:
-- Implement routing strategy selection
+- Implement routing strategy selection with round_robin/random/priority support
 - Add fallback chain logic
 - Track per-model/per-key latency and error rates
 - Integration tests for routing decisions
+
+Implementation: `server/models.py - routing_strategy column on Provider and APIKey`, `server/routes/chat.py - routing strategy selection in chat completions`, `server/routes/providers.py - routing_strategy CRUD endpoints`
+
+Tests: `tests/test_routing_strategy.py - new test file for routing strategy`
 
 ### implement-streaming-support — Server-sent events streaming for chat completions
 
