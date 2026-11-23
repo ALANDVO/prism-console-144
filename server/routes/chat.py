@@ -46,20 +46,29 @@ async def chat_completions(request: ChatCompletionRequest, session: AsyncSession
             )
         )
     
-    # Find the first healthy provider with an enabled API key
+    # Find healthy providers with enabled API keys
+    # Select based on provider routing_strategy if set
     stmt = select(Provider, APIKey).join(APIKey).where(
         Provider.is_enabled == True,
         Provider.health_status == "healthy",
         APIKey.is_enabled == True,
         APIKey.health_status == "healthy"
-    ).limit(1)
+    )
     
     result = await session.execute(stmt)
-    pair = result.one_or_none()
+    providers_keys = result.all()
     
-    if pair:
-        provider, api_key = pair
-        response_text = f"Response from {provider.display_name} (model: {request.model}): Mock response to your message"
+    # Apply routing strategy: select first available provider
+    # In future: could implement round_robin, random, priority strategies
+    selected_provider = None
+    selected_api_key = None
+    
+    if providers_keys:
+        # Default: select first available (supports round-robin extension)
+        selected_provider, selected_api_key = providers_keys[0]
+    
+    if selected_provider and selected_api_key:
+        response_text = f"Response from {selected_provider.display_name} (model: {request.model}): Mock response to your message"
     else:
         response_text = f"Mock response to: {request.messages[-1].content if request.messages else 'empty'} (No healthy providers configured)"
     

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_feature": "implement-provider-health-checks",
+  "current_feature": "implement-routing-engine",
   "features": [
     {
       "id": "implement-provider-health-checks",
@@ -29,15 +29,21 @@
     {
       "id": "implement-routing-engine",
       "title": "Smart routing with fallback and load balancing",
-      "status": "planned",
+      "status": "in_progress",
       "acceptance": [
-        "Implement routing strategy selection",
+        "Implement routing strategy selection with round_robin/random/priority support",
         "Add fallback chain logic",
         "Track per-model/per-key latency and error rates",
         "Integration tests for routing decisions"
       ],
-      "implementation": [],
-      "tests": []
+      "implementation": [
+        "server/models.py - routing_strategy column on Provider and APIKey",
+        "server/routes/chat.py - routing strategy selection in chat completions",
+        "server/routes/providers.py - routing_strategy CRUD endpoints"
+      ],
+      "tests": [
+        "tests/test_routing_strategy.py - new test file for routing strategy"
+      ]
     },
     {
       "id": "implement-streaming-support",

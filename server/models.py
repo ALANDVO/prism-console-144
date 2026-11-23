@@ -35,6 +35,7 @@ class Provider(Base):
     health_status = Column(SQLEnum(HealthStatus), default=HealthStatus.UNKNOWN)
     last_health_check = Column(DateTime, nullable=True)
     last_health_error = Column(Text, nullable=True)
+    routing_strategy = Column(String(50), nullable=True, default=None)  # round_robin, random, priority
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -109,6 +110,8 @@ class ProviderCreate(BaseModel):
     base_url: HttpUrl
     models_endpoint: str = "/models"
     is_enabled: bool = True
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
 
 
 class ProviderUpdate(BaseModel):
@@ -116,6 +119,8 @@ class ProviderUpdate(BaseModel):
     base_url: Optional[HttpUrl] = None
     models_endpoint: Optional[str] = None
     is_enabled: Optional[bool] = None
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
 
 
 class ProviderResponse(BaseModel):
@@ -129,6 +134,8 @@ class ProviderResponse(BaseModel):
     health_status: HealthStatus
     last_health_check: Optional[datetime]
     last_health_error: Optional[str]
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
     created_at: datetime
     updated_at: datetime
     
@@ -145,6 +152,8 @@ class APIKeyCreate(BaseModel):
 class APIKeyUpdate(BaseModel):
     name: Optional[str] = Field(None, max_length=100)
     is_enabled: Optional[bool] = None
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
 
 
 class APIKeyResponse(BaseModel):
@@ -156,6 +165,8 @@ class APIKeyResponse(BaseModel):
     health_status: HealthStatus
     last_health_check: Optional[datetime]
     last_health_error: Optional[str]
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
+    routing_strategy: Optional[str] = None  # round_robin, random, priority
     created_at: datetime
     updated_at: datetime
     
