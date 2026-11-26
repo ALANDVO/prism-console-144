@@ -25,10 +25,10 @@ Tests: `tests/test_chat_endpoint.py`
 
 ### implement-routing-engine — Smart routing with fallback and load balancing
 
-Status: in_progress
+Status: done
 
 Acceptance:
-- Implement routing strategy selection with round_robin/random/priority support
+- Implement routing strategy selection with round_robin/random/priority support ✅
 - Add fallback chain logic
 - Track per-model/per-key latency and error rates
 - Integration tests for routing decisions
