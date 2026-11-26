@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, text
 import time
+import random
 import uuid
 
 from server.database import get_session
@@ -58,14 +59,34 @@ async def chat_completions(request: ChatCompletionRequest, session: AsyncSession
     result = await session.execute(stmt)
     providers_keys = result.all()
     
-    # Apply routing strategy: select first available provider
-    # In future: could implement round_robin, random, priority strategies
+    # Apply routing strategy selection
     selected_provider = None
     selected_api_key = None
     
     if providers_keys:
-        # Default: select first available (supports round-robin extension)
-        selected_provider, selected_api_key = providers_keys[0]
+        # Determine routing strategy from provider (first one that sets it)
+        strategy: Optional[str] = None
+        for prov, key in providers_keys:
+            if prov.routing_strategy in ("round_robin", "random", "priority"):
+                strategy = prov.routing_strategy
+                break
+
+        # Apply the selected strategy
+        if strategy == "round_robin":
+            # Select first available; index tracking can be added per-session later
+            selected_provider, selected_api_key = providers_keys[0]
+        elif strategy == "random":
+            selected_provider, selected_api_key = random.choice(providers_keys)
+        elif strategy == "priority":
+            # Prefer providers with priority strategy; fall back to first available
+            priority_entries = [(p, k) for p, k in providers_keys if p.routing_strategy == "priority"]
+            if priority_entries:
+                selected_provider, selected_api_key = priority_entries[0]
+            else:
+                selected_provider, selected_api_key = providers_keys[0]
+        else:
+            # No strategy set; default to first available
+            selected_provider, selected_api_key = providers_keys[0]
     
     if selected_provider and selected_api_key:
         response_text = f"Response from {selected_provider.display_name} (model: {request.model}): Mock response to your message"

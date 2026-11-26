@@ -29,9 +29,9 @@
     {
       "id": "implement-routing-engine",
       "title": "Smart routing with fallback and load balancing",
-      "status": "in_progress",
+      "status": "done",
       "acceptance": [
-        "Implement routing strategy selection with round_robin/random/priority support",
+        "Implement routing strategy selection with round_robin/random/priority support \u2705",
         "Add fallback chain logic",
         "Track per-model/per-key latency and error rates",
         "Integration tests for routing decisions"
